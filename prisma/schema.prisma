@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model city_tb {
+  idx          Int            @id @default(autoincrement())
+  name         String         @db.VarChar
+  population   Int
+  statistic_tb statistic_tb[]
+}
+
+model crime_type_tb {
+  idx                   Int            @id @default(autoincrement())
+  large_classification  String         @db.VarChar
+  middle_classification String         @db.VarChar
+  statistic_tb          statistic_tb[]
+}
+
+model statistic_tb {
+  idx           Int           @id @default(autoincrement())
+  city          Int
+  crime_type    Int
+  occurence     Int
+  city_tb       city_tb       @relation(fields: [city], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "statistic_city_fkey")
+  crime_type_tb crime_type_tb @relation(fields: [crime_type], references: [idx], onDelete: NoAction, onUpdate: NoAction, map: "statistic_crime_type_fkey")
+}
